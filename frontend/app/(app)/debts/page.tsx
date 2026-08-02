@@ -1,2 +1,2 @@
-import { PlaceholderPage } from "@/components/pages/placeholder-page";
-export default function DebtsPage() { return <PlaceholderPage title="Debts" description="Track outstanding balances and debt status." />; }
+import { DebtManagement } from "@/components/debts/debt-management";
+export default function DebtsPage() { return <DebtManagement />; }
