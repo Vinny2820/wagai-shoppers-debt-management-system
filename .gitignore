@@ -1,3 +1,10 @@
 node_modules/
 .env
 .DS_Store
+
+# Database backups
+*.dump
+*.sql.gz
+wagai_phase1_backup_*.sql
+wagai_phase1_backup_*.dump
+wagai_phase1_backup_*.sql.gz
