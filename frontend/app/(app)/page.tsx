@@ -1,2 +1,2 @@
-import { DashboardPlaceholder } from "@/components/dashboard/dashboard-placeholder";
-export default function DashboardPage() { return <DashboardPlaceholder />; }
+import { DashboardManagement } from "@/components/dashboard/dashboard-management";
+export default function DashboardPage() { return <DashboardManagement />; }

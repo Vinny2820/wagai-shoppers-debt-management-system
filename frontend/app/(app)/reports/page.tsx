@@ -1,2 +1,2 @@
-import { PlaceholderPage } from "@/components/pages/placeholder-page";
-export default function ReportsPage() { return <PlaceholderPage title="Reports" description="Review business performance and financial summaries." />; }
+import { ReportManagement } from "@/components/reports/report-management";
+export default function ReportsPage() { return <ReportManagement />; }
