@@ -28,7 +28,21 @@ export function DebtManagement() {
   const reload = useCallback(() => { setLoading(true); setRefresh((value) => value + 1); }, []);
   useEffect(() => { let cancelled = false; void load().then(([nextDebts, nextCustomers]) => { if (!cancelled) { setDebts(nextDebts); setCustomers(nextCustomers); setError(""); } }).catch(() => { if (!cancelled) setError("Unable to load debts. Please try again."); }).finally(() => { if (!cancelled) setLoading(false); }); return () => { cancelled = true; }; }, [load, refresh]);
   const resetPage = useCallback(() => setPage(1), []);
-  const filtered = useMemo(() => debts.filter((debt) => `${debt.customer.name} ${debt.description ?? ""}`.toLowerCase().includes(query.toLowerCase()) && (status === "ALL" || debt.status === status) && (customerId === "ALL" || debt.customerId === customerId) && (outstanding === "ALL" || (outstanding === "YES" ? debt.outstandingBalance > 0 : debt.outstandingBalance === 0))).sort((a, b) => { const values: Record<string, number | string> = { amount: a.amount - b.amount, outstandingBalance: a.outstandingBalance - b.outstandingBalance, createdAt: new Date(a.createdAt ?? 0).getTime() - new Date(b.createdAt ?? 0).getTime(), customer: a.customer.name.localeCompare(b.customer.name), status: a.status.localeCompare(b.status) }; return (descending ? -1 : 1) * Number(values[sort]); }), [customerId, debts, descending, outstanding, query, sort, status]);
+  const filtered = useMemo(() => debts.filter((debt) => `${debt.customer.name} ${debt.description ?? ""}`.toLowerCase().includes(query.toLowerCase()) && (status === "ALL" || debt.status === status) && (customerId === "ALL" || debt.customerId === customerId) && (outstanding === "ALL" || (outstanding === "YES" ? debt.outstandingBalance > 0 : debt.outstandingBalance === 0))).sort((a, b) => {
+    let result = 0;
+    if (sort === "customer") {
+      result = a.customer.name.localeCompare(b.customer.name);
+    } else if (sort === "status") {
+      result = a.status.localeCompare(b.status);
+    } else if (sort === "createdAt") {
+      result = new Date(a.createdAt ?? 0).getTime() - new Date(b.createdAt ?? 0).getTime();
+    } else if (sort === "amount") {
+      result = a.amount - b.amount;
+    } else {
+      result = a.outstandingBalance - b.outstandingBalance;
+    }
+    return descending ? -result : result;
+  }), [customerId, debts, descending, outstanding, query, sort, status]);
   const pages = Math.max(1, Math.ceil(filtered.length / size)); const currentPage = Math.min(page, pages); const visible = filtered.slice((currentPage - 1) * size, currentPage * size);
   const openCreate = useCallback(() => { setForm(blank); setCreating(true); }, []); const closeForm = useCallback(() => { setCreating(false); setEditing(null); }, []); const openEdit = useCallback((debt: Debt) => { setForm({ customerId: debt.customerId, amount: String(debt.amount), description: debt.description ?? "" }); setEditing(debt); }, []);
   const changeForm = useCallback((event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => setForm((value) => ({ ...value, [event.target.name]: event.target.value })), []);
